@@ -21,11 +21,11 @@ searchURL= "https://www.markastok.com"; #base url
 
 for x in range(0, len(df.index)): #i did a for loop 0 to lenght of urls
     if str(df.iloc[x,5]) is None: #i have five variables
-        print(str(df.iloc[x,0]) + " | " + str(df.iloc[x,1]) + " | "  + str(df.iloc[x,2]) + " | " + str(df.iloc[x,3]) + " | " +str(df.iloc[x,4]) + " | "  +str(df.iloc[x,5]) + " | "  + str(df.iloc[x,6]))
+        print(str(df.iloc[x,0]) + " | " + str(df.iloc[x,1]) + " | "  + str(df.iloc[x,2]) + " | " + str(df.iloc[x,3]) + " | " +str(df.iloc[x,4]) + " | "  +str(df.iloc[x,5]))
     else:
         #not the links starts here
         links = df.iloc[x,0]
-        #i searched  variables which are name, stock, current price, discount price, normal price and the discount rate of the product
+        #i searched  variables which are name, stock, current price, discount price, and the discount rate of the product
         search0 = BeautifulSoup (requests.get(searchURL + urllib.parse.quote_plus(links) + 'name', headers = userAgent).text, 'html.parser')
         name = search0.find('a', href = True) #location of the name in the html of web
 
@@ -38,17 +38,13 @@ for x in range(0, len(df.index)): #i did a for loop 0 to lenght of urls
         search3 = BeautifulSoup(requests.get(searchURL + urllib.parse.quote_plus(currentPrice) + 'discountPrice', headers = userAgent).text, 'html.parser')
         discountedPrice = search3.find('span', {"class": "discountedPrice"}).get_text()#location of the discount price in the html of web
 
-        search4 = BeautifulSoup(requests.get(searchURL + urllib.parse.quote_plus(discountedPrice) + 'price' , headers = userAgent).text, 'html.parser')
-        price = search4.find('div', {"class": "product-item-price"}).get_text()#location of the price in the html of web
-
-        search5 = BeautifulSoup(requests.get(searchURL + urllib.parse.quote_plus(price) + 'discount' , headers = userAgent).text, 'html.parser')
+        search5 = BeautifulSoup(requests.get(searchURL + urllib.parse.quote_plus(discountedPrice) + 'discount' , headers = userAgent).text, 'html.parser')
         discount = search5.find('div', {"class": "product-item-discount"}).get_text()#location of the discount rate in the html of web
 
         df.loc[x, 'name'] = name; #it append to the our links excel file one by one
         df.loc[x, 'stock'] = stock;
         df.loc[x, 'currentPrice'] = currentPrice;
         df.loc[x, 'discountedPrice'] = discountedPrice;
-        df.loc[x, 'price'] = price;
         df.loc[x, 'discount'] = discount;
 
 
@@ -57,15 +53,14 @@ for x in range(0, len(df.index)): #i did a for loop 0 to lenght of urls
         worksh.write('stock', stock)
         worksh.write('currentPrice', currentPrice)
         worksh.write('discountedPrice', discountedPrice)
-        worksh.write('price', price)
         worksh.write('discount', discount)
         
 
 
 
-        print(df.iloc[x,0] + " | " + 'stock' + " | " + 'currentPrice' + " | " + 'discountedPrice' + " | " + 'price' + " | " + 'discount') #i juts want to see if it working or not
+        print(df.iloc[x,0] + " | " + "name" + " | " + 'stock' + " | " + 'currentPrice' + " | " + 'discountedPrice' + " | " + 'discount') #i juts want to see if it working or not
         df.to_excel(datasetLocation, index = False) #checking
-      #  return name, stock, currentPrice, discountedPrice, price, discount
+      #  return name, stock, currentPrice, discountedPrice, discount
 
 
 work.close() #closed excel file
